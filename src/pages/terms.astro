@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Banner from '../components/Banner.astro';
+import LegalPage from '../components/LegalPage.astro';
+import { brand } from '../config/brand';
+import { termsOfService } from '../data/terms';
+---
+
+<BaseLayout title="Условия предоставления услуг" description={`Условия предоставления услуг компании ${brand.name}. Ознакомьтесь с правилами, регулирующими использование нашего сайта и услуг.`}>
+  <Header slot="header" />
+
+  <Banner title="Условия предоставления услуг" />
+
+  <LegalPage effectiveDate={termsOfService.effectiveDate} sections={termsOfService.sections} />
+
+  <Footer slot="footer" />
+</BaseLayout>
