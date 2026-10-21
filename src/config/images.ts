@@ -42,7 +42,7 @@ export { heroImage };
 // Для использования: поместите файл в папку src/assets/images/about/, затем раскомментируйте
 // приведенный ниже импорт, укажите имя вашего файла и измените экспорт на: export { aboutImage };
 //
-// import aboutImage from '../assets/images/about/team.jpg';
+import aboutImage from '../assets/images/about/team.jpg';
 export const aboutImage: ImageMetadata | undefined = undefined;
 // закомментируйте строку выше и раскомментируйте строку ниже, чтобы использовать собственное изображение
 // export { aboutImage };
