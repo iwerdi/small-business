@@ -7,6 +7,14 @@ function slugify(value) {
 }
 function yamlString(s) { return JSON.stringify(String(s)); }
 function escapeMarkdown(s) { return String(s).replace(/\r\n?/g, '\n').trim(); }
+function sanitizeBodyHtml(input) {
+  let html = String(input ?? '').trim();
+  html = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style|iframe|object|embed|form|svg|math|video|audio)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '').replace(/<(script|style|iframe|object|embed|form|svg|math|video|audio)\b[^>]*\/?\s*>/gi, '');
+  html = html.replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '').replace(/\s+(srcdoc|contenteditable|formaction)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+  html = html.replace(/(href|src)\s*=\s*(["'])\s*javascript:[\s\S]*?\2/gi, '$1="#"');
+  html = html.replace(/<img\b([^>]*?)src=("|')((?!\/assets\/images\/blog\/)[^"']*)\2([^>]*)>/gi, '<img$1$4>');
+  return html;
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return send(res, 405, { error: 'Метод не поддерживается.' });
@@ -19,8 +27,8 @@ export default async function handler(req, res) {
   const description = clean(body.description, 400);
   const date = clean(body.date, 10);
   const author = clean(body.author || 'ГАРАЖ PRO', 100);
-  const text = escapeMarkdown(body.body || '');
-  if (!title || !description || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !text) return send(res, 400, { error: 'Заполни название, описание, дату и текст статьи.' });
+  const text = sanitizeBodyHtml(escapeMarkdown(body.body || ''));
+  if (!title || !description || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !text || !text.replace(/<[^>]*>/g, '').trim()) return send(res, 400, { error: 'Заполни название, описание, дату и текст статьи.' });
   if (text.length > 100000) return send(res, 413, { error: 'Текст слишком большой (максимум 100 000 символов).' });
   let imagePath = '';
   const image = body.image;

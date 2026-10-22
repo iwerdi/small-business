@@ -7,7 +7,7 @@
   <title>Управление статьями — ГАРАЖ PRO</title>
   <style>
     :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17202a;background:#f4f6f8;font-synthesis:none}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh}.top{background:#17202a;color:white;padding:20px max(20px,calc((100% - 920px)/2));display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{font-weight:800;letter-spacing:.04em}.sub{font-size:13px;color:#cbd5e1;margin-top:4px}.wrap{max-width:920px;margin:32px auto;padding:0 18px 50px}.panel{background:#fff;border:1px solid #e0e5eb;border-radius:16px;padding:24px;box-shadow:0 5px 24px #16202a0a}.hidden{display:none!important}h1{font-size:25px;margin:0 0 8px}p.lead{color:#586575;margin:0 0 24px;line-height:1.5}.field{display:block;margin:16px 0}.field span{display:block;font-size:14px;font-weight:650;margin-bottom:7px}.field input,.field textarea{width:100%;font:inherit;border:1px solid #cbd3dc;border-radius:9px;padding:12px;background:white;color:#17202a}.field textarea{min-height:240px;resize:vertical;line-height:1.6}.field input:focus,.field textarea:focus{outline:3px solid #c9dcff;border-color:#3976d5}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.btn{appearance:none;border:0;border-radius:9px;padding:12px 17px;background:#1e5bb8;color:#fff;font:inherit;font-weight:700;cursor:pointer}.btn:disabled{opacity:.6;cursor:wait}.btn.secondary{background:#e9eef5;color:#17202a}.btn.ghost{background:transparent;color:#fff;border:1px solid #64748b;padding:8px 12px}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:22px}.status{margin-top:16px;padding:12px 14px;border-radius:9px;line-height:1.5;background:#eef4ff;color:#173b73;white-space:pre-wrap}.status.error{background:#fff0f0;color:#8c2020}.status.ok{background:#e9f8ef;color:#175b32}.hint{font-size:13px;color:#667386;line-height:1.5;margin-top:6px}.photo-name{font-size:13px;color:#566477;margin-top:7px}.small{font-size:12px;color:#b8c3d1}.logout{white-space:nowrap}.footer{font-size:12px;color:#718096;text-align:center;margin-top:18px}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh}.top{background:#17202a;color:white;padding:20px max(20px,calc((100% - 920px)/2));display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{font-weight:800;letter-spacing:.04em}.sub{font-size:13px;color:#cbd5e1;margin-top:4px}.wrap{max-width:920px;margin:32px auto;padding:0 18px 50px}.panel{background:#fff;border:1px solid #e0e5eb;border-radius:16px;padding:24px;box-shadow:0 5px 24px #16202a0a}.hidden{display:none!important}h1{font-size:25px;margin:0 0 8px}p.lead{color:#586575;margin:0 0 24px;line-height:1.5}.field{display:block;margin:16px 0}.field span{display:block;font-size:14px;font-weight:650;margin-bottom:7px}.field input,.field textarea{width:100%;font:inherit;border:1px solid #cbd3dc;border-radius:9px;padding:12px;background:white;color:#17202a}.field textarea{min-height:240px;resize:vertical;line-height:1.6}.editor-shell{border:1px solid #cbd3dc;border-radius:10px;overflow:hidden;background:#fff}.toolbar{display:flex;flex-wrap:wrap;gap:5px;padding:8px;border-bottom:1px solid #e0e5eb;background:#f8fafc}.tool{border:1px solid #d5dce5;background:#fff;border-radius:6px;padding:7px 9px;min-width:34px;cursor:pointer;font:inherit}.tool:hover{background:#eaf1fa}.rich-editor{min-height:300px;padding:16px;outline:none;line-height:1.7;overflow-wrap:anywhere}.rich-editor:empty:before{content:attr(data-placeholder);color:#8a96a6;pointer-events:none}.rich-editor img{max-width:100%;height:auto;border-radius:8px}.rich-editor blockquote{border-left:3px solid #9aa9bc;margin-left:0;padding-left:14px;color:#526174}.rich-editor h2{font-size:1.45em;font-weight:750}.rich-editor h3{font-size:1.2em;font-weight:700}.rich-editor a{color:#1e5bb8;text-decoration:underline}.field input:focus,.field textarea:focus{outline:3px solid #c9dcff;border-color:#3976d5}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.btn{appearance:none;border:0;border-radius:9px;padding:12px 17px;background:#1e5bb8;color:#fff;font:inherit;font-weight:700;cursor:pointer}.btn:disabled{opacity:.6;cursor:wait}.btn.secondary{background:#e9eef5;color:#17202a}.btn.ghost{background:transparent;color:#fff;border:1px solid #64748b;padding:8px 12px}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:22px}.status{margin-top:16px;padding:12px 14px;border-radius:9px;line-height:1.5;background:#eef4ff;color:#173b73;white-space:pre-wrap}.status.error{background:#fff0f0;color:#8c2020}.status.ok{background:#e9f8ef;color:#175b32}.hint{font-size:13px;color:#667386;line-height:1.5;margin-top:6px}.photo-name{font-size:13px;color:#566477;margin-top:7px}.small{font-size:12px;color:#b8c3d1}.logout{white-space:nowrap}.footer{font-size:12px;color:#718096;text-align:center;margin-top:18px}
     @media(max-width:600px){.top{padding:16px 18px}.wrap{margin:18px auto}.panel{padding:18px}.row{grid-template-columns:1fr;gap:0}h1{font-size:22px}}
   </style>
 </head>
@@ -29,7 +29,27 @@
         <label class="field"><span>Краткое описание *</span><textarea name="description" required maxlength="400" style="min-height:90px" placeholder="Краткое описание для страницы со всеми статьями"></textarea></label>
         <div class="row"><label class="field"><span>Дата публикации *</span><input name="date" type="date" required></label><label class="field"><span>Автор</span><input name="author" maxlength="100" value="ГАРАЖ PRO"></label></div>
         <label class="field"><span>Обложка статьи (необязательно)</span><input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><div class="hint">JPG, PNG, WEBP или GIF, максимум 3 МБ.</div><div id="photoName" class="photo-name"></div></label>
-        <label class="field"><span>Текст статьи *</span><textarea name="body" required maxlength="100000" placeholder="Напиши текст статьи. Можно использовать Markdown:&#10;&#10;## Заголовок&#10;&#10;**Жирный текст**&#10;&#10;- пункт списка"></textarea><div class="hint">Можно писать обычный текст. Для подзаголовка начни строку с ##, для списка — с дефиса. Фотографии внутри текста пока добавляются только через отдельный запрос к администратору.</div></label>
+        <div class="field"><span>Текст статьи *</span>
+          <div class="editor-shell">
+            <div class="toolbar" role="toolbar" aria-label="Форматирование текста">
+              <button class="tool" type="button" data-cmd="bold" title="Жирный"><b>B</b></button>
+              <button class="tool" type="button" data-cmd="italic" title="Курсив"><i>I</i></button>
+              <button class="tool" type="button" data-cmd="underline" title="Подчёркнутый"><u>U</u></button>
+              <button class="tool" type="button" data-block="h2" title="Заголовок 2">H2</button>
+              <button class="tool" type="button" data-block="h3" title="Заголовок 3">H3</button>
+              <button class="tool" type="button" data-block="p" title="Обычный текст">¶</button>
+              <button class="tool" type="button" data-cmd="insertUnorderedList" title="Маркированный список">• Список</button>
+              <button class="tool" type="button" data-cmd="insertOrderedList" title="Нумерованный список">1. Список</button>
+              <button class="tool" type="button" id="linkButton" title="Вставить ссылку">Ссылка</button>
+              <button class="tool" type="button" id="imageButton" title="Вставить изображение в текст">Фото в текст</button>
+              <button class="tool" type="button" id="removeFormat" title="Очистить форматирование">Очистить формат</button>
+            </div>
+            <div id="bodyEditor" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Напиши или вставь текст из Word, Google Docs или другого сайта…"></div>
+          </div>
+          <input type="hidden" name="body" id="bodyValue">
+          <input type="file" id="inlineImage" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+          <div class="hint">Можно вставлять форматированный текст из Word, Google Docs и сайтов. Используй панель для заголовков, жирного/курсивного текста, списков, ссылок и изображений внутри статьи. Изображения загружаются в проект и сохраняются вместе со статьёй.</div>
+        </div>
         <div class="actions"><button id="publish" class="btn" type="submit">Опубликовать статью</button><button id="clear" class="btn secondary" type="button">Очистить форму</button></div>
         <div id="publishStatus" class="status hidden" role="status"></div>
       </form>
@@ -57,21 +77,91 @@ $('loginForm').addEventListener('submit', async (event) => {
 });
 logout.addEventListener('click', async () => { try { await request('/api/admin-logout', {method:'POST',body:'{}'}); } finally { setLoggedIn(false); } });
 $('photo').addEventListener('change', () => { const file = $('photo').files[0]; $('photoName').textContent = file ? `${file.name} (${(file.size/1024/1024).toFixed(2)} МБ)` : ''; });
-$('clear').addEventListener('click', () => { $('articleForm').reset(); $('photoName').textContent=''; $('publishStatus').classList.add('hidden'); });
+$('clear').addEventListener('click', () => { $('articleForm').reset(); $('bodyEditor').innerHTML=''; $('photoName').textContent=''; $('publishStatus').classList.add('hidden'); });
 function readFile(file) { return new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error('Не удалось прочитать фотографию.')); reader.readAsDataURL(file); }); }
 $('articleForm').addEventListener('submit', async (event) => {
-  event.preventDefault(); const form = new FormData(event.currentTarget); const status = $('publishStatus'); const button = $('publish'); button.disabled=true; button.textContent='Публикуем…'; status.classList.add('hidden');
+  event.preventDefault(); const articleForm = event.currentTarget; const form = new FormData(articleForm); const status = $('publishStatus'); const button = $('publish'); button.disabled=true; button.textContent='Публикуем…'; status.classList.add('hidden');
   try {
     const file = $('photo').files[0];
     if (file && file.size > 3*1024*1024) throw new Error('Фото больше 3 МБ. Уменьши его и выбери снова.');
-    const payload = {title:form.get('title'),description:form.get('description'),date:form.get('date'),author:form.get('author'),body:form.get('body')};
+    const payload = {title:form.get('title'),description:form.get('description'),date:form.get('date'),author:form.get('author'),body:$('bodyEditor').innerHTML};
     if (file) payload.image = {name:file.name,data:await readFile(file)};
     const result = await request('/api/admin-publish', {method:'POST',body:JSON.stringify(payload)});
     showStatus(status, result.message + '\nАдрес статьи: /blog/' + result.slug + '/', 'ok');
-    event.currentTarget.reset(); $('photoName').textContent='';
+    articleForm.reset(); $('bodyEditor').innerHTML=''; $('photoName').textContent='';
   } catch (error) { showStatus(status, error.message, 'error'); }
   finally { button.disabled=false; button.textContent='Опубликовать статью'; }
 });
+
+const bodyEditor = $('bodyEditor');
+const bodyValue = $('bodyValue');
+let savedRange = null;
+function rememberSelection() { const sel = window.getSelection(); if (sel && sel.rangeCount && bodyEditor.contains(sel.anchorNode)) savedRange = sel.getRangeAt(0).cloneRange(); }
+bodyEditor.addEventListener('mouseup', rememberSelection); bodyEditor.addEventListener('keyup', rememberSelection);
+function restoreSelection() { bodyEditor.focus(); if (savedRange) { const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange); } }
+document.querySelectorAll('[data-cmd]').forEach(button => button.addEventListener('click', () => { restoreSelection(); document.execCommand(button.dataset.cmd, false, null); rememberSelection(); }));
+document.querySelectorAll('[data-block]').forEach(button => button.addEventListener('click', () => { restoreSelection(); document.execCommand('formatBlock', false, button.dataset.block); rememberSelection(); }));
+$('removeFormat').addEventListener('click', () => { restoreSelection(); document.execCommand('removeFormat', false, null); document.execCommand('formatBlock', false, 'p'); rememberSelection(); });
+$('linkButton').addEventListener('click', () => { restoreSelection(); const url=prompt('Вставь адрес ссылки (https://…):'); if (url && /^(https?:\/\/|mailto:)/i.test(url.trim())) document.execCommand('createLink', false, url.trim()); else if (url) alert('Для безопасности ссылка должна начинаться с https://, http:// или mailto:'); rememberSelection(); });
+function cleanPastedHtml(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('script,style,iframe,object,embed,meta,link,form,input,button,svg,video,audio').forEach(el=>el.remove());
+  const allowed = new Set(['P','DIV','SPAN','BR','HR','B','STRONG','I','EM','U','S','STRIKE','H2','H3','H4','UL','OL','LI','BLOCKQUOTE','A','IMG','TABLE','THEAD','TBODY','TR','TH','TD','SUB','SUP']);
+  doc.body.querySelectorAll('*').forEach(el=>{
+    if (!allowed.has(el.tagName)) { el.replaceWith(...el.childNodes); return; }
+    [...el.attributes].forEach(attr=>{
+      const name=attr.name.toLowerCase(), value=attr.value.trim();
+      if (name.startsWith('on') || name==='class' || name==='id' || name==='contenteditable' || name==='srcset') { el.removeAttribute(attr.name); return; }
+      if (name==='style') {
+        const safe = value.split(';').map(rule=>rule.trim()).filter(Boolean).map(rule=>{ const i=rule.indexOf(':'); if(i<0)return ''; const prop=rule.slice(0,i).trim().toLowerCase(), val=rule.slice(i+1).trim();
+          if (prop==='font-weight' && /^(bold|normal|[1-9]00)$/i.test(val)) return `${prop}:${val}`;
+          if (prop==='font-style' && /^(italic|normal)$/i.test(val)) return `${prop}:${val}`;
+          if (prop==='text-decoration' && /^(underline|line-through|none)$/i.test(val)) return `${prop}:${val}`;
+          if (prop==='text-align' && /^(left|right|center|justify)$/i.test(val)) return `${prop}:${val}`;
+          if (['color','background-color'].includes(prop) && /^(#[0-9a-f]{3,8}|rgba?\([0-9.,%\s]+\)|[a-z]{3,20})$/i.test(val)) return `${prop}:${val}`;
+          if (prop==='font-size' && /^(\d{1,3}(\.\d{1,2})?(px|pt|em|rem|%))$/i.test(val)) return `${prop}:${val}`;
+          return ''; }).filter(Boolean).join(';');
+        if (safe) el.setAttribute('style',safe); else el.removeAttribute('style'); return;
+      }
+      if (el.tagName==='A' && name==='href' && !/^(https?:\/\/|mailto:|\/|#)/i.test(value)) el.removeAttribute(attr.name);
+      else if (el.tagName==='IMG' && name==='src' && !/^https?:\/\//i.test(value) && !value.startsWith('/assets/images/blog/')) el.removeAttribute(attr.name);
+      else if (!(el.tagName==='A' && ['href','title'].includes(name)) && !(el.tagName==='IMG' && ['src','alt','title','width','height'].includes(name)) && !(['TH','TD'].includes(el.tagName) && ['colspan','rowspan'].includes(name))) el.removeAttribute(attr.name);
+    });
+  });
+  return doc.body.innerHTML;
+}
+async function uploadInlineImage(file) {
+  if (!/^image\/(jpeg|png|webp|gif)$/.test(file.type)) throw new Error('Поддерживаются JPG, PNG, WEBP и GIF.');
+  if (file.size>3*1024*1024) throw new Error('Изображение больше 3 МБ. Уменьши его и попробуй снова.');
+  const data=await readFile(file);
+  return request('/api/admin-upload-image',{method:'POST',body:JSON.stringify({name:file.name || 'pasted-image',data})});
+}
+bodyEditor.addEventListener('paste', async event => {
+  const clipboard=event.clipboardData; if (!clipboard) return;
+  const imageItem = [...clipboard.items].find(item => item.kind==='file' && item.type.startsWith('image/'));
+  if (imageItem) {
+    event.preventDefault(); const file=imageItem.getAsFile(); if (!file) return;
+    try { showStatus($('publishStatus'),'Загружаю изображение из буфера…'); const result=await uploadInlineImage(file); restoreSelection(); document.execCommand('insertHTML',false,`<p><img src="${result.path}" alt="Изображение статьи"></p>`); rememberSelection(); $('publishStatus').classList.add('hidden'); }
+    catch(error) { showStatus($('publishStatus'),error.message,'error'); }
+    return;
+  }
+  const html=clipboard.getData('text/html');
+  if (html) { event.preventDefault(); const safe=cleanPastedHtml(html); document.execCommand('insertHTML', false, safe); rememberSelection(); }
+});
+$('imageButton').addEventListener('click', () => { rememberSelection(); $('inlineImage').click(); });
+$('inlineImage').addEventListener('change', async () => {
+  const file=$('inlineImage').files[0]; if (!file) return;
+  if (!/^image\/(jpeg|png|webp|gif)$/.test(file.type)) { showStatus($('publishStatus'),'Выбери JPG, PNG, WEBP или GIF.','error'); $('inlineImage').value=''; return; }
+  if (file.size>3*1024*1024) { showStatus($('publishStatus'),'Изображение больше 3 МБ. Уменьши его и попробуй снова.','error'); $('inlineImage').value=''; return; }
+  try {
+    showStatus($('publishStatus'),'Загружаю изображение…');
+    const result=await uploadInlineImage(file);
+    restoreSelection(); document.execCommand('insertHTML',false,`<p><img src="${result.path}" alt="${file.name.replace(/[&<>"']/g,'')}" loading="lazy"></p>`); rememberSelection();
+    $('publishStatus').classList.add('hidden');
+  } catch(error) { showStatus($('publishStatus'),error.message,'error'); }
+  finally { $('inlineImage').value=''; }
+});
+
 const dateInput = document.querySelector('input[name="date"]'); const today = new Date(); dateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 checkSession();
 </script>
