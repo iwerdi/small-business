@@ -10,7 +10,7 @@
  */
 
 export const termsOfService = {
-  effectiveDate: '1 сентября 2026 г.',
+  effectiveDate: '21 октября 2026 г.',
 
   sections: [
     {

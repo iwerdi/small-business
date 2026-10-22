@@ -43,9 +43,9 @@ export { heroImage };
 // приведенный ниже импорт, укажите имя вашего файла и измените экспорт на: export { aboutImage };
 //
 import aboutImage from '../assets/images/about/team.jpg';
-export const aboutImage: ImageMetadata | undefined = undefined;
+// export const aboutImage: ImageMetadata | undefined = undefined;
 // закомментируйте строку выше и раскомментируйте строку ниже, чтобы использовать собственное изображение
-// export { aboutImage };
+export { aboutImage };
 
 // ── Галерея — автоматическое обнаружение ───────────────────────────────────────
 // Добавьте любое количество изображений в папку src/assets/images/gallery/ —

@@ -11,9 +11,11 @@ interface Props {
   author?: string;
 }
 
-const { title, description, date, author = 'Team' } = Astro.props;
+// Заменяем автора по умолчанию с "Team" на "Команда"
+const { title, description, date, author = 'Команда' } = Astro.props;
 
-const formattedDate = date.toLocaleDateString('en-US', {
+// Меняем локаль с 'en-US' на 'ru-RU' для красивого русского формата даты
+const formattedDate = date.toLocaleDateString('ru-RU', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
@@ -26,14 +28,14 @@ const formattedDate = date.toLocaleDateString('en-US', {
   <!-- Post hero -->
   <section class="bg-primary py-14 sm:py-16 lg:py-20">
     <div class="mx-auto max-w-site px-4 sm:px-6">
-      <nav aria-label="Breadcrumb" class="mb-4">
+      <nav aria-label="Хлебные крошки" class="mb-4">
         <ol class="flex items-center gap-1.5 text-sm text-primary-fg/60">
-          <li><a href="/" class="transition-colors hover:text-primary-fg">Home</a></li>
+          <li><a href="/" class="transition-colors hover:text-primary-fg">Главная</a></li>
           <li class="flex items-center gap-1.5">
             <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-            <a href="/blog" class="transition-colors hover:text-primary-fg">Blog</a>
+            <a href="/blog" class="transition-colors hover:text-primary-fg">Блог</a>
           </li>
           <li class="flex items-center gap-1.5">
             <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -68,7 +70,7 @@ const formattedDate = date.toLocaleDateString('en-US', {
           <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
           </svg>
-          Back to Blog
+          Назад в блог
         </a>
       </div>
     </div>

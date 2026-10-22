@@ -12,7 +12,7 @@ const {
   title = 'Готовы записать автомобиль на ремонт?',
   description = 'Свяжитесь с нами прямо сейчас, чтобы получить консультацию или записаться на обслуживание. Мы поможем решить любую проблему с вашим авто.',
   buttonText = 'Записаться в мессенджере',
-  buttonHref = 'https://t.me/ваш_бот', // Здесь потом укажете ссылку на ваш Telegram/WhatsApp бот
+  buttonHref = 'https://t.me/PBorisTelegramBot', // Здесь потом укажете ссылку на ваш Telegram/WhatsApp бот
 } = Astro.props;
 ---
 
@@ -36,7 +36,7 @@ const {
         href={`tel:${siteData.phoneForTel}`}
         class="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border-2 border-primary-fg/30 px-8 py-3 text-base font-bold text-primary-fg transition-colors hover:border-primary-fg hover:bg-primary-fg/10"
       >
-        Call{" "}{siteData.phoneFormatted}
+        <span class="mr-1.5 text-base">📱</span>{siteData.phoneFormatted}
       </a>
     </div>
   </div>

@@ -7,6 +7,7 @@ import CTA from '../components/CTA.astro';
 import { Image } from 'astro:assets';
 import { brand } from '../config/brand';
 import { siteData } from '../data/siteData';
+import myTeamImage from '../assets/images/about/my-team.jpg';
 
 const { about } = siteData;
 ---
@@ -21,10 +22,10 @@ const { about } = siteData;
     <div class="mx-auto grid max-w-site grid-cols-1 items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-14">
       <div class="overflow-hidden rounded-lg shadow-lg">
         <Image
-          src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80"
+          src={myTeamImage}
           alt="Наша команда обсуждает рабочий процесс"
           width={800}
-          height={600}
+          height={1200}
           loading="lazy"
           class="size-full object-cover"
         />
