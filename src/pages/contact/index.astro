@@ -5,6 +5,7 @@ import Footer from "../../components/Footer.astro";
 import Banner from "../../components/Banner.astro";
 import { brand } from "../../config/brand";
 import { siteData } from "../../data/siteData";
+import { badWords } from "../../data/badWords";
 ---
 
 <BaseLayout
@@ -29,14 +30,12 @@ import { siteData } from "../../data/siteData";
         </p>
 
         <form
+          id="contact-form"
           name="contact"
           method="POST"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-          action="/contact/success"
           class="flex flex-col gap-5"
+          novalidate
         >
-          <input type="hidden" name="form-name" value="contact" />
           <p class="hidden" aria-hidden="true">
             <label
               >Оставьте это поле пустым: <input
@@ -105,7 +104,99 @@ import { siteData } from "../../data/siteData";
           >
             Отправить сообщение
           </button>
+          <div
+            id="contact-form-status"
+            class="hidden rounded-md border p-4 text-sm"
+            role="status"
+            aria-live="polite"
+          ></div>
         </form>
+        <script>
+          import { badWords } from "../../data/badWords";
+
+          const form = document.querySelector<HTMLFormElement>("#contact-form");
+          const status = document.querySelector<HTMLDivElement>("#contact-form-status");
+          const normalize = (value: string) =>
+            value
+              .normalize("NFKC")
+              .toLocaleLowerCase("ru-RU")
+              .replace(/ё/g, "е")
+              .replace(/[0о]/g, "о")
+              .replace(/[3з]/g, "з")
+              .replace(/[4ч]/g, "ч")
+              .replace(/[6б]/g, "б")
+              .replace(/[1!|]/g, "и")
+              .replace(/[@а]/g, "а")
+              .replace(/[$5s]/g, "с")
+              .replace(/[^a-zа-я0-9]/gi, "");
+
+          const hasProfanity = (value: string) => {
+            const normalized = normalize(value);
+            return badWords.some((word) => {
+              const normalizedWord = normalize(word);
+              return normalizedWord.length >= 3 && normalized.includes(normalizedWord);
+            });
+          };
+
+          form?.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (!form || !status) return;
+
+            status.className = "rounded-md border p-4 text-sm";
+            status.classList.remove("hidden");
+            const values = new FormData(form);
+            const name = String(values.get("name") || "").trim();
+            const email = String(values.get("email") || "").trim();
+            const message = String(values.get("message") || "").trim();
+
+            if (!name || !email || !message) {
+              status.classList.add("border-red-500", "text-red-600");
+              status.textContent = "Заполните имя, электронную почту и сообщение.";
+              return;
+            }
+            if (hasProfanity(message) || hasProfanity(name)) {
+              status.classList.add("border-red-500", "text-red-600");
+              status.textContent = "Сообщение содержит недопустимую или ненормативную лексику. Пожалуйста, отредактируйте текст.";
+              return;
+            }
+
+            const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+            if (button) {
+              button.disabled = true;
+              button.textContent = "Отправка...";
+            }
+            status.textContent = "Отправляем сообщение...";
+            status.setAttribute("aria-busy", "true");
+
+            try {
+              const response = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name,
+                  email,
+                  phone: String(values.get("phone") || "").trim(),
+                  message,
+                  "bot-field": String(values.get("bot-field") || ""),
+                }),
+              });
+              const result = await response.json();
+              const success = response.ok && result.ok;
+              status.classList.add(...(success ? ["border-green-600", "text-green-700"] : ["border-red-500", "text-red-600"]));
+              status.textContent = result.message || "Не удалось обработать сообщение.";
+              if (success) form.reset();
+            } catch {
+              status.classList.add("border-red-500", "text-red-600");
+              status.textContent = "Не удалось связаться с сервером. Попробуйте ещё раз или позвоните нам.";
+            } finally {
+              status.removeAttribute("aria-busy");
+              if (button) {
+                button.disabled = false;
+                button.textContent = "Отправить сообщение";
+              }
+            }
+          });
+        </script>
       </div>
 
       <!-- Contact info sidebar -->

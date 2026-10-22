@@ -163,60 +163,15 @@ Update your production domain in **two places**:
 
 This ensures sitemaps, canonical URLs, Open Graph tags, and JSON-LD structured data all point to the correct domain.
 
-### Step 9 — Deploy to Netlify
+### Step 9 — Deploy to Vercel (GitHub + Vercel + Resend)
 
-1. Push your repo to GitHub
-2. Connect it in [Netlify](https://app.netlify.com)
-3. Build settings are auto-detected from `netlify.toml`
-4. The contact form uses Netlify Forms — no extra configuration needed
+1. Push the project to GitHub and import/connect that repository in Vercel.
+2. In Vercel, open **Project → Settings → Environment Variables** and add:
+   - `RESEND_API_KEY` — the API key from your Resend account.
+   - `RESEND_FROM_EMAIL` — an email sender verified in Resend, e.g. `Garage Pro <noreply@your-verified-domain.com>`.
+3. Apply the variables to Production (and Preview if you want preview deployments to send test emails), then redeploy.
+4. The contact form sends `POST /api/contact`. The Vercel serverless function checks the name and message against `src/data/badWords.ts` on the server before calling Resend.
+5. Messages are addressed to `werdi@list.ru`, configured in `src/data/siteData.ts`. `RESEND_FROM_EMAIL` must be a verified sender/domain in Resend; the recipient can be a different address.
+6. Test one clean message and one message containing a listed bad word. The latter should return a validation error and must not call Resend.
 
----
-
-## Pages
-
-| Route | File |
-|---|---|
-| `/` | `src/pages/index.astro` |
-| `/about` | `src/pages/about.astro` |
-| `/services` | `src/pages/services.astro` |
-| `/reviews` | `src/pages/reviews.astro` |
-| `/contact` | `src/pages/contact/index.astro` |
-| `/blog` | `src/pages/blog/index.astro` |
-| `/blog/[slug]` | `src/pages/blog/[...slug].astro` |
-| `/privacy` | `src/pages/privacy.astro` |
-| `/terms` | `src/pages/terms.astro` |
-
-## Editable Data Files
-
-| File | What to edit |
-|---|---|
-| `src/data/siteData.ts` | Business info, services, reviews, team, hours, navigation |
-| `src/data/privacy.ts` | Privacy Policy content |
-| `src/data/terms.ts` | Terms of Service content |
-| `src/styles/theme.css` | Colors, radius, type scale, spacing |
-| `src/config/brand.ts` | Site identity and font names |
-| `src/config/images.ts` | Hero, about, and gallery image imports |
-
-## Commands
-
-| Command | Action |
-|---|---|
-| `pnpm dev` | Start dev server at `localhost:4321` |
-| `pnpm build` | Build production site to `dist/` |
-| `pnpm preview` | Preview production build locally |
-| `pnpm test` | Run Playwright tests |
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Astro 7 |
-| Styling | Tailwind CSS v4 |
-| Typography | @tailwindcss/typography |
-| SEO | @astrojs/sitemap, astro-robots-txt |
-| Testing | Playwright |
-| Hosting | Netlify (static) |
-
-## License
-
-[MIT](LICENSE) — free to use, modify, and distribute.
+Never commit your real Resend API key to GitHub or put it in a `PUBLIC_` environment variable. Keep it only in Vercel's server-side environment variables.

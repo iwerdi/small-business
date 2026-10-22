@@ -12,7 +12,7 @@ const {
   title = 'Готовы записать автомобиль на ремонт?',
   description = 'Свяжитесь с нами прямо сейчас, чтобы получить консультацию или записаться на обслуживание. Мы поможем решить любую проблему с вашим авто.',
   buttonText = 'Записаться в мессенджере',
-  buttonHref = 'https://t.me/PBorisTelegramBot', // Здесь потом укажете ссылку на ваш Telegram/WhatsApp бот
+  buttonHref = 'https://t.me/PBorisTelegramBot',
 } = Astro.props;
 ---
 
@@ -28,6 +28,8 @@ const {
     <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
       <a
         href={buttonHref}
+        target="_blank"
+        rel="noopener noreferrer"
         class="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-8 py-3 text-base font-bold text-accent-fg shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         {buttonText}
