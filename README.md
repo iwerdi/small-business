@@ -175,3 +175,8 @@ This ensures sitemaps, canonical URLs, Open Graph tags, and JSON-LD structured d
 6. Test one clean message and one message containing a listed bad word. The latter should return a validation error and must not call Resend.
 
 Never commit your real Resend API key to GitHub or put it in a `PUBLIC_` environment variable. Keep it only in Vercel's server-side environment variables.
+
+
+## Vercel contact function import fix
+
+The `api/contact.ts` function is self-contained for its server-side profanity list and recipient address. This avoids a Node.js ESM runtime import of TypeScript files under `src/data`, which can fail after deployment to Vercel with `ERR_MODULE_NOT_FOUND`. The recipient is `werdi@list.ru`.
