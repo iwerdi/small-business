@@ -1319,7 +1319,7 @@ const badWords: string[] = [
 
 ];
 
-const CONTACT_EMAIL = 'werdi@list.ru';
+const CONTACT_EMAIL = 'karamboff@gmail.com';
 
 function respond(res: any, status: number, body: Record<string, unknown>) {
   return res.status(status).setHeader('Cache-Control', 'no-store').json(body);
