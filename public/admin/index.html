@@ -4,21 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#111827" />
   <title>Статьи — ГАРАЖ PRO</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script>
-    // ВАЖНО: после создания служебного сайта Netlify замените YOUR-NETLIFY-SITE
-    // на его реальное имя. Это адрес только для проверки входа, сайт Garage Pro
-    // продолжает работать на Vercel.
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.init({
-        APIUrl: "https://garazh-pro.netlify.app/.netlify/identity"
-      });
-      window.netlifyIdentity.on("login", () => window.location.reload());
-    }
-  </script>
+  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 </body>
 </html>

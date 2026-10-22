@@ -1,4 +1,4 @@
-import { badWords } from "../../src/data/badWords";
+import { badWords } from "../../src/data/badWords.ts";
 import { siteData } from "../../src/data/siteData.ts";
 
 const json = (statusCode, body) => ({

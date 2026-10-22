@@ -1,13 +1,9 @@
-# Админка статей Garage Pro
-# После создания служебного сайта в Netlify замените YOUR-NETLIFY-SITE
-# на его имя (например, garage-pro-admin), без https:// и без слеша в конце.
+# Sveltia CMS — Garage Pro
 backend:
-  name: git-gateway
+  name: github
+  repo: iwerdi/small-business
   branch: main
-  identity_url: https://garazh-pro.netlify.app/.netlify/identity
-  gateway_url: https://garazh-pro.netlify.app/.netlify/git-api
 
-# Фотографии будут храниться рядом с изображениями блога, уже используемыми сайтом.
 media_folder: "public/assets/images/blog"
 public_folder: "/assets/images/blog"
 
