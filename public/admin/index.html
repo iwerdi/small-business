@@ -15,7 +15,7 @@
     // продолжает работать на Vercel.
     if (window.netlifyIdentity) {
       window.netlifyIdentity.init({
-        APIUrl: "https://YOUR-NETLIFY-SITE.netlify.app/.netlify/identity"
+        APIUrl: "https://YOUR-NETLIFY-SITES.netlify.app/.netlify/identity"
       });
       window.netlifyIdentity.on("login", () => window.location.reload());
     }
