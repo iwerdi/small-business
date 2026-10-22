@@ -5,7 +5,6 @@ import Footer from "../../components/Footer.astro";
 import Banner from "../../components/Banner.astro";
 import { brand } from "../../config/brand";
 import { siteData } from "../../data/siteData";
-import { badWords } from "../../data/badWords.js";
 ---
 
 <BaseLayout
@@ -112,31 +111,11 @@ import { badWords } from "../../data/badWords.js";
           ></div>
         </form>
         <script>
-          import { badWords } from "../../data/badWords.js";
+          import { containsProfanity } from "../../data/profanityFilter.js";
 
           const form = document.querySelector<HTMLFormElement>("#contact-form");
           const status = document.querySelector<HTMLDivElement>("#contact-form-status");
-          const normalize = (value: string) =>
-            value
-              .normalize("NFKC")
-              .toLocaleLowerCase("ru-RU")
-              .replace(/ё/g, "е")
-              .replace(/[0о]/g, "о")
-              .replace(/[3з]/g, "з")
-              .replace(/[4ч]/g, "ч")
-              .replace(/[6б]/g, "б")
-              .replace(/[1!|]/g, "и")
-              .replace(/[@а]/g, "а")
-              .replace(/[$5s]/g, "с")
-              .replace(/[^a-zа-я0-9]/gi, "");
 
-          const hasProfanity = (value: string) => {
-            const normalized = normalize(value);
-            return badWords.some((word) => {
-              const normalizedWord = normalize(word);
-              return normalizedWord.length >= 3 && normalized.includes(normalizedWord);
-            });
-          };
 
           form?.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -154,7 +133,7 @@ import { badWords } from "../../data/badWords.js";
               status.textContent = "Заполните имя, электронную почту и сообщение.";
               return;
             }
-            if (hasProfanity(message) || hasProfanity(name)) {
+            if (containsProfanity(message) || containsProfanity(name)) {
               status.classList.add("border-red-500", "text-red-600");
               status.textContent = "Сообщение содержит недопустимую или ненормативную лексику. Пожалуйста, отредактируйте текст.";
               return;

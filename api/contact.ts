@@ -1,4 +1,4 @@
-import { badWords } from '../src/data/badWords.js';
+import { containsProfanity } from '../src/data/profanityFilter.js';
 
 
 
@@ -8,29 +8,6 @@ function respond(res: any, status: number, body: Record<string, unknown>) {
   return res.status(status).setHeader('Cache-Control', 'no-store').json(body);
 }
 
-// Normalize punctuation/spacing and common lookalike substitutions before matching.
-function normalize(value: unknown): string {
-  return String(value ?? '')
-    .normalize('NFKC')
-    .toLocaleLowerCase('ru-RU')
-    .replace(/ё/g, 'е')
-    .replace(/[0о]/g, 'о')
-    .replace(/[3з]/g, 'з')
-    .replace(/[4ч]/g, 'ч')
-    .replace(/[6б]/g, 'б')
-    .replace(/[1!|]/g, 'и')
-    .replace(/[@а]/g, 'а')
-    .replace(/[$5s]/g, 'с')
-    .replace(/[^a-zа-я0-9]/gi, '');
-}
-
-function containsProfanity(value: string): boolean {
-  const normalized = normalize(value);
-  return badWords.some((entry) => {
-    const word = normalize(entry);
-    return word.length >= 3 && normalized.includes(word);
-  });
-}
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
