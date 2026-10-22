@@ -4,8 +4,8 @@
 backend:
   name: git-gateway
   branch: main
-  identity_url: https://YOUR-NETLIFY-SITE.netlify.app/.netlify/identity
-  gateway_url: https://YOUR-NETLIFY-SITE.netlify.app/.netlify/git-api
+  identity_url: https://garazh-pro.netlify.app/.netlify/identity
+  gateway_url: https://garazh-pro.netlify.app/.netlify/git-api
 
 # Фотографии будут храниться рядом с изображениями блога, уже используемыми сайтом.
 media_folder: "public/assets/images/blog"
