@@ -5,6 +5,7 @@ import Footer from "../../components/Footer.astro";
 import Banner from "../../components/Banner.astro";
 import { brand } from "../../config/brand";
 import { siteData } from "../../data/siteData";
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <BaseLayout
@@ -97,6 +98,11 @@ import { siteData } from "../../data/siteData";
             ></textarea>
           </label>
 
+          {turnstileSiteKey && (
+            <div class="mt-1" aria-label="Проверка защиты от ботов">
+              <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
+            </div>
+          )}
           <button
             type="submit"
             class="mt-2 inline-flex min-h-11 cursor-pointer items-center justify-center self-start rounded-md bg-accent px-8 py-3 text-base font-bold text-accent-fg shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -110,6 +116,7 @@ import { siteData } from "../../data/siteData";
             aria-live="polite"
           ></div>
         </form>
+        <script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
         <script>
           import { containsProfanity } from "../../data/profanityFilter.js";
 
@@ -157,6 +164,7 @@ import { siteData } from "../../data/siteData";
                   phone: String(values.get("phone") || "").trim(),
                   message,
                   "bot-field": String(values.get("bot-field") || ""),
+                  "cf-turnstile-response": String(values.get("cf-turnstile-response") || ""),
                 }),
               });
               const result = await response.json();
@@ -164,6 +172,9 @@ import { siteData } from "../../data/siteData";
               status.classList.add(...(success ? ["border-green-600", "text-green-700"] : ["border-red-500", "text-red-600"]));
               status.textContent = result.message || "Не удалось обработать сообщение.";
               if (success) form.reset();
+              if (result.code === "CAPTCHA") {
+                (window as Window & { turnstile?: { reset: () => void } }).turnstile?.reset();
+              }
             } catch {
               status.classList.add("border-red-500", "text-red-600");
               status.textContent = "Не удалось связаться с сервером. Попробуйте ещё раз или позвоните нам.";

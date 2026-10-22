@@ -180,3 +180,30 @@ Never commit your real Resend API key to GitHub or put it in a `PUBLIC_` environ
 ## Vercel contact function import fix
 
 The `api/contact.ts` function is self-contained for its server-side profanity list and recipient address. This avoids a Node.js ESM runtime import of TypeScript files under `src/data`, which can fail after deployment to Vercel with `ERR_MODULE_NOT_FOUND`. The recipient is `werdi@list.ru`.
+
+
+## Защита контактной формы от спама
+
+Контактная форма включает скрытое honeypot-поле, серверную проверку ненормативной лексики, лимит в 3 запроса за 10 минут с одного IP и автоматические временные блокировки с увеличением срока при повторных нарушениях. Проверка лимита выполняется до обращения к Resend.
+
+### Включение постоянного лимита и блок-листа (Upstash Redis, бесплатный тариф)
+
+1. Создайте бесплатную базу Redis в [Upstash](https://upstash.com/).
+2. В разделе REST API скопируйте REST URL и REST Token.
+3. В Vercel → Project → Settings → Environment Variables добавьте `UPSTASH_REDIS_REST_URL` и `UPSTASH_REDIS_REST_TOKEN`.
+4. Перезапустите деплой. При доступном Redis лимиты и блокировки общие для серверных экземпляров и сохраняются между деплоями. Если Redis настроен, но недоступен, API закрывает отправку на время ошибки, чтобы не отправлять письма без защиты. Если переменные Upstash не заданы, используется только временный счётчик в памяти экземпляра — он не подходит для постоянной защиты в production.
+
+### Включение Cloudflare Turnstile (бесплатная капча)
+
+1. Создайте сайт в [Cloudflare Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) и добавьте hostname `garazh-pro.vercel.app` (а также другие реально используемые hostname, если они есть). Покупать домен не требуется.
+2. Скопируйте Site Key и Secret Key.
+3. В Vercel → Settings → Environment Variables добавьте `PUBLIC_TURNSTILE_SITE_KEY` (Site Key), `TURNSTILE_SECRET_KEY` (Secret Key) и `TURNSTILE_ALLOWED_HOSTNAMES` со списком разрешённых hostname через запятую, например `garazh-pro.vercel.app`. Не используйте URL со схемой `https://` или путём.
+4. Сделайте новый деплой. Пока ключи Turnstile не заданы, форма остаётся работоспособной без капчи; после задания Secret Key сервер отклоняет запросы без действительного токена. Установите обе переменные одновременно.
+
+### Ручная блокировка IP через Upstash
+
+Для постоянной блокировки IP создайте ключ Redis `garage:contact:ban:IP_АДРЕС` со значением `manual` **без TTL/expiration**. Например, для адреса `203.0.113.10` ключ будет `garage:contact:ban:203.0.113.10`. Для снятия блокировки удалите этот ключ. Срок автоматической блокировки начинается с 1 часа и увеличивается при повторных превышениях, максимум до 7 дней. Не блокируйте надолго общие IP-адреса (например, корпоративную сеть), чтобы случайно не ограничить реальных клиентов.
+
+### Переменные среды
+
+Смотрите `.env.example`. Секреты добавляйте только в Vercel Environment Variables; не коммитьте реальные значения в GitHub. После добавления или изменения переменных сделайте новый деплой.

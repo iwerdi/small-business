@@ -1,0 +1,20 @@
+backend:
+  name: git-gateway
+  branch: main # Название вашей ветки на GitHub (main или master)
+
+media_folder: "public/images/blog" # Папка, куда будут сохраняться загруженные картинки
+public_folder: "/images/blog"     # Путь к картинкам на сайте
+
+collections:
+  - name: "blog"
+    label: "Блог и статьи"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Краткое описание", name: "description", widget: "text" }
+      - { label: "Дата публикации", name: "pubDate", widget: "datetime" }
+      - { label: "Автор", name: "author", widget: "string", default: "ГАРАЖ PRO" }
+      - { label: "Обложка статьи", name: "image", widget: "image", required: false }
+      - { label: "Текст статьи", name: "body", widget: "markdown" }
