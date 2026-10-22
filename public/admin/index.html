@@ -1,13 +1,79 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#111827" />
-  <title>Статьи — ГАРАЖ PRO</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Управление статьями — ГАРАЖ PRO</title>
+  <style>
+    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17202a;background:#f4f6f8;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh}.top{background:#17202a;color:white;padding:20px max(20px,calc((100% - 920px)/2));display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{font-weight:800;letter-spacing:.04em}.sub{font-size:13px;color:#cbd5e1;margin-top:4px}.wrap{max-width:920px;margin:32px auto;padding:0 18px 50px}.panel{background:#fff;border:1px solid #e0e5eb;border-radius:16px;padding:24px;box-shadow:0 5px 24px #16202a0a}.hidden{display:none!important}h1{font-size:25px;margin:0 0 8px}p.lead{color:#586575;margin:0 0 24px;line-height:1.5}.field{display:block;margin:16px 0}.field span{display:block;font-size:14px;font-weight:650;margin-bottom:7px}.field input,.field textarea{width:100%;font:inherit;border:1px solid #cbd3dc;border-radius:9px;padding:12px;background:white;color:#17202a}.field textarea{min-height:240px;resize:vertical;line-height:1.6}.field input:focus,.field textarea:focus{outline:3px solid #c9dcff;border-color:#3976d5}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.btn{appearance:none;border:0;border-radius:9px;padding:12px 17px;background:#1e5bb8;color:#fff;font:inherit;font-weight:700;cursor:pointer}.btn:disabled{opacity:.6;cursor:wait}.btn.secondary{background:#e9eef5;color:#17202a}.btn.ghost{background:transparent;color:#fff;border:1px solid #64748b;padding:8px 12px}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:22px}.status{margin-top:16px;padding:12px 14px;border-radius:9px;line-height:1.5;background:#eef4ff;color:#173b73;white-space:pre-wrap}.status.error{background:#fff0f0;color:#8c2020}.status.ok{background:#e9f8ef;color:#175b32}.hint{font-size:13px;color:#667386;line-height:1.5;margin-top:6px}.photo-name{font-size:13px;color:#566477;margin-top:7px}.small{font-size:12px;color:#b8c3d1}.logout{white-space:nowrap}.footer{font-size:12px;color:#718096;text-align:center;margin-top:18px}
+    @media(max-width:600px){.top{padding:16px 18px}.wrap{margin:18px auto}.panel{padding:18px}.row{grid-template-columns:1fr;gap:0}h1{font-size:22px}}
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+  <header class="top"><div><div class="brand">ГАРАЖ PRO</div><div class="sub">Панель управления статьями</div></div><button id="logout" class="btn ghost hidden" type="button">Выйти</button></header>
+  <main class="wrap">
+    <section id="loginPanel" class="panel hidden">
+      <h1>Вход для редактора</h1><p class="lead">Введи выданные администратором логин и пароль.</p>
+      <form id="loginForm" autocomplete="on">
+        <label class="field"><span>Логин</span><input name="username" autocomplete="username" required maxlength="100"></label>
+        <label class="field"><span>Пароль</span><input name="password" type="password" autocomplete="current-password" required maxlength="200"></label>
+        <button class="btn" type="submit">Войти</button><div id="loginStatus" class="status hidden" role="status"></div>
+      </form>
+    </section>
+    <section id="editorPanel" class="panel hidden">
+      <h1>Новая статья</h1><p class="lead">Заполни поля, добавь фотографию при необходимости и нажми «Опубликовать». Сайт обновится автоматически после деплоя.</p>
+      <form id="articleForm">
+        <label class="field"><span>Название статьи *</span><input name="title" required maxlength="160" placeholder="Например, Когда менять масло в АКПП"></label>
+        <label class="field"><span>Краткое описание *</span><textarea name="description" required maxlength="400" style="min-height:90px" placeholder="Краткое описание для страницы со всеми статьями"></textarea></label>
+        <div class="row"><label class="field"><span>Дата публикации *</span><input name="date" type="date" required></label><label class="field"><span>Автор</span><input name="author" maxlength="100" value="ГАРАЖ PRO"></label></div>
+        <label class="field"><span>Обложка статьи (необязательно)</span><input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><div class="hint">JPG, PNG, WEBP или GIF, максимум 3 МБ.</div><div id="photoName" class="photo-name"></div></label>
+        <label class="field"><span>Текст статьи *</span><textarea name="body" required maxlength="100000" placeholder="Напиши текст статьи. Можно использовать Markdown:&#10;&#10;## Заголовок&#10;&#10;**Жирный текст**&#10;&#10;- пункт списка"></textarea><div class="hint">Можно писать обычный текст. Для подзаголовка начни строку с ##, для списка — с дефиса. Фотографии внутри текста пока добавляются только через отдельный запрос к администратору.</div></label>
+        <div class="actions"><button id="publish" class="btn" type="submit">Опубликовать статью</button><button id="clear" class="btn secondary" type="button">Очистить форму</button></div>
+        <div id="publishStatus" class="status hidden" role="status"></div>
+      </form>
+    </section>
+    <div class="footer">Доступ только для уполномоченных сотрудников. Не сообщай пароль посторонним.</div>
+  </main>
+<script>
+const $ = (id) => document.getElementById(id);
+const loginPanel = $('loginPanel'), editorPanel = $('editorPanel'), logout = $('logout');
+function showStatus(el, message, type='') { el.textContent = message; el.className = 'status' + (type ? ' ' + type : ''); el.classList.remove('hidden'); }
+async function request(url, options={}) {
+  const response = await fetch(url, { credentials:'same-origin', ...options, headers:{'Content-Type':'application/json', ...(options.headers||{})} });
+  const data = await response.json().catch(()=>({error:'Сервер вернул некорректный ответ.'}));
+  if (!response.ok) throw new Error(data.error || `Ошибка ${response.status}`);
+  return data;
+}
+function setLoggedIn(yes) { loginPanel.classList.toggle('hidden', yes); editorPanel.classList.toggle('hidden', !yes); logout.classList.toggle('hidden', !yes); }
+async function checkSession() { try { const data = await request('/api/admin-session', {headers:{}}); setLoggedIn(data.authenticated); } catch { setLoggedIn(false); } }
+$('loginForm').addEventListener('submit', async (event) => {
+  event.preventDefault(); const form = new FormData(event.currentTarget); const status = $('loginStatus'); const button = event.currentTarget.querySelector('button');
+  button.disabled = true; status.classList.add('hidden');
+  try { await request('/api/admin-login', {method:'POST', body:JSON.stringify({username:form.get('username'),password:form.get('password')})}); event.currentTarget.reset(); setLoggedIn(true); }
+  catch (error) { showStatus(status, error.message, 'error'); }
+  finally { button.disabled = false; }
+});
+logout.addEventListener('click', async () => { try { await request('/api/admin-logout', {method:'POST',body:'{}'}); } finally { setLoggedIn(false); } });
+$('photo').addEventListener('change', () => { const file = $('photo').files[0]; $('photoName').textContent = file ? `${file.name} (${(file.size/1024/1024).toFixed(2)} МБ)` : ''; });
+$('clear').addEventListener('click', () => { $('articleForm').reset(); $('photoName').textContent=''; $('publishStatus').classList.add('hidden'); });
+function readFile(file) { return new Promise((resolve,reject) => { const reader = new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error('Не удалось прочитать фотографию.')); reader.readAsDataURL(file); }); }
+$('articleForm').addEventListener('submit', async (event) => {
+  event.preventDefault(); const form = new FormData(event.currentTarget); const status = $('publishStatus'); const button = $('publish'); button.disabled=true; button.textContent='Публикуем…'; status.classList.add('hidden');
+  try {
+    const file = $('photo').files[0];
+    if (file && file.size > 3*1024*1024) throw new Error('Фото больше 3 МБ. Уменьши его и выбери снова.');
+    const payload = {title:form.get('title'),description:form.get('description'),date:form.get('date'),author:form.get('author'),body:form.get('body')};
+    if (file) payload.image = {name:file.name,data:await readFile(file)};
+    const result = await request('/api/admin-publish', {method:'POST',body:JSON.stringify(payload)});
+    showStatus(status, result.message + '\nАдрес статьи: /blog/' + result.slug + '/', 'ok');
+    event.currentTarget.reset(); $('photoName').textContent='';
+  } catch (error) { showStatus(status, error.message, 'error'); }
+  finally { button.disabled=false; button.textContent='Опубликовать статью'; }
+});
+const dateInput = document.querySelector('input[name="date"]'); const today = new Date(); dateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+checkSession();
+</script>
 </body>
 </html>
