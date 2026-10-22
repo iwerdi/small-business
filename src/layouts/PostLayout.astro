@@ -9,10 +9,11 @@ interface Props {
   description: string;
   date: Date;
   author?: string;
+  image?: string;
 }
 
 // Заменяем автора по умолчанию с "Team" на "Команда"
-const { title, description, date, author = 'Команда' } = Astro.props;
+const { title, description, date, author = 'ГАРАЖ PRO', image } = Astro.props;
 
 // Меняем локаль с 'en-US' на 'ru-RU' для красивого русского формата даты
 const formattedDate = date.toLocaleDateString('ru-RU', {
@@ -58,6 +59,15 @@ const formattedDate = date.toLocaleDateString('ru-RU', {
   <!-- Post content -->
   <section class="py-section">
     <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      {image && (
+        <img
+          src={image}
+          alt={title}
+          class="mb-8 aspect-video w-full rounded-xl object-cover"
+          loading="eager"
+          decoding="async"
+        />
+      )}
       <article class="prose prose-lg max-w-none prose-headings:font-heading prose-headings:uppercase prose-a:text-primary-light hover:prose-a:text-primary">
         <slot />
       </article>

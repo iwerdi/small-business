@@ -1,20 +1,35 @@
+# Админка статей Garage Pro
+# После создания служебного сайта в Netlify замените YOUR-NETLIFY-SITE
+# на его имя (например, garage-pro-admin), без https:// и без слеша в конце.
 backend:
   name: git-gateway
-  branch: main # Название вашей ветки на GitHub (main или master)
+  branch: main
+  identity_url: https://YOUR-NETLIFY-SITE.netlify.app/.netlify/identity
+  gateway_url: https://YOUR-NETLIFY-SITE.netlify.app/.netlify/git-api
 
-media_folder: "public/images/blog" # Папка, куда будут сохраняться загруженные картинки
-public_folder: "/images/blog"     # Путь к картинкам на сайте
+# Фотографии будут храниться рядом с изображениями блога, уже используемыми сайтом.
+media_folder: "public/assets/images/blog"
+public_folder: "/assets/images/blog"
+
+locale: "ru"
+show_preview_links: false
 
 collections:
   - name: "blog"
-    label: "Блог и статьи"
+    label: "Статьи"
+    label_singular: "Статья"
     folder: "src/content/blog"
     create: true
+    delete: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    summary: "{{title}} — {{date}}"
+    sortable_fields: ["date", "title"]
     fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Краткое описание", name: "description", widget: "text" }
-      - { label: "Дата публикации", name: "pubDate", widget: "datetime" }
-      - { label: "Автор", name: "author", widget: "string", default: "ГАРАЖ PRO" }
+      - { label: "Название статьи", name: "title", widget: "string", hint: "Короткое и понятное название" }
+      - { label: "Краткое описание", name: "description", widget: "text", hint: "Одно-два предложения для списка статей" }
+      - { label: "Дата публикации", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD.MM.YYYY", time_format: false }
+      - { label: "Автор", name: "author", widget: "string", default: "ГАРАЖ PRO", required: false }
       - { label: "Обложка статьи", name: "image", widget: "image", required: false }
-      - { label: "Текст статьи", name: "body", widget: "markdown" }
+      - { label: "Текст статьи", name: "body", widget: "markdown", hint: "Пишите обычный текст. Заголовки, списки и фотографии можно добавлять с помощью панели редактора." }

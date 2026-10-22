@@ -3,27 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Управление сайтом — ГАРАЖ PRO</title>
-  <!-- Подключаем виджет авторизации Netlify Identity -->
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Статьи — ГАРАЖ PRO</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- Подключаем саму CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  
   <script>
+    // ВАЖНО: после создания служебного сайта Netlify замените YOUR-NETLIFY-SITE
+    // на его реальное имя. Это адрес только для проверки входа, сайт Garage Pro
+    // продолжает работать на Vercel.
     if (window.netlifyIdentity) {
       window.netlifyIdentity.init({
-        APIUrl: "https://iwerdi.netlify.app/.netlify/identity"
+        APIUrl: "https://YOUR-NETLIFY-SITE.netlify.app/.netlify/identity"
       });
-
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.reload();
-          });
-        }
-      });
+      window.netlifyIdentity.on("login", () => window.location.reload());
     }
   </script>
 </body>

@@ -31,6 +31,9 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
             });
             return (
               <article class="group flex flex-col overflow-hidden rounded-lg border border-border bg-background shadow-sm transition-shadow hover:shadow-md">
+                {post.data.image && (
+                  <img src={post.data.image} alt={post.data.title} class="aspect-video w-full object-cover" loading="lazy" decoding="async" />
+                )}
                 <div class="flex flex-1 flex-col p-6">
                   <div class="flex items-center gap-2 text-sm text-text-muted">
                     <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
