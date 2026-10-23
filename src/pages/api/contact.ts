@@ -1,11 +1,18 @@
-import { containsProfanity } from '../src/data/profanityFilter.js';
+import type { APIRoute } from 'astro';
+import { containsProfanity } from '../../data/profanityFilter.js';
+
+// Серверный маршрут Astro (раньше был отдельной функцией Vercel в /api/contact.ts).
+export const prerender = false;
 
 
 
 const CONTACT_EMAIL = 'karamboff@gmail.com';
 
-function respond(res: any, status: number, body: Record<string, unknown>) {
-  return res.status(status).setHeader('Cache-Control', 'no-store').json(body);
+function respond(status: number, body: Record<string, unknown>, headers: Record<string, string> = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers },
+  });
 }
 
 
@@ -16,10 +23,10 @@ const memoryAttempts = new Map<string, { count: number; expiresAt: number }>();
 const memoryBans = new Map<string, { expiresAt: number; permanent?: boolean }>();
 const memoryStrikes = new Map<string, { count: number; expiresAt: number }>();
 
-function getClientIp(req: any): string {
+function getClientIp(req: Request): string {
   // Vercel supplies x-forwarded-for. Use only its first (client) address.
-  const realIp = String(req.headers?.['x-real-ip'] ?? '').trim();
-  const forwarded = String(req.headers?.['x-forwarded-for'] ?? '').split(',')[0].trim();
+  const realIp = String(req.headers.get('x-real-ip') ?? '').trim();
+  const forwarded = String(req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
   const ip = realIp || forwarded;
   // Do not trust an arbitrary malformed value as a Redis key.
   return ip && ip.length <= 64 && /^[0-9a-fA-F:.]+$/.test(ip) ? ip : 'unknown';
@@ -103,7 +110,7 @@ async function checkRateLimit(ip: string): Promise<{ allowed: boolean; retryAfte
   return { allowed: false, retryAfter: seconds };
 }
 
-async function verifyTurnstile(token: string, ip: string, req: any): Promise<boolean> {
+async function verifyTurnstile(token: string, ip: string, req: Request): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   // Until the owner configures Turnstile, keep the existing form functional.
   // Once a secret is present, missing/invalid tokens are always rejected.
@@ -127,7 +134,7 @@ async function verifyTurnstile(token: string, ip: string, req: any): Promise<boo
     if (!result.success) return false;
     const allowedHosts = String(process.env.TURNSTILE_ALLOWED_HOSTNAMES ?? '')
       .split(',').map((host) => host.trim().toLowerCase()).filter(Boolean);
-    const requestHost = String(req.headers?.['x-forwarded-host'] ?? req.headers?.host ?? '')
+    const requestHost = String(req.headers.get('x-forwarded-host') ?? req.headers.get('host') ?? '')
       .split(',')[0].trim().split(':')[0].toLowerCase();
     const validHosts = allowedHosts.length ? allowedHosts : (requestHost ? [requestHost] : []);
     return !validHosts.length || validHosts.includes(String(result.hostname ?? '').toLowerCase());
@@ -138,37 +145,35 @@ async function verifyTurnstile(token: string, ip: string, req: any): Promise<boo
 }
 
 
-export default async function handler(req: any, res: any) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return respond(res, 405, { ok: false, message: 'Метод не поддерживается.' });
-  }
+export const ALL: APIRoute = () =>
+  respond(405, { ok: false, message: 'Метод не поддерживается.' }, { Allow: 'POST' });
 
-  const data = typeof req.body === 'string'
-    ? (() => { try { return JSON.parse(req.body); } catch { return null; } })()
-    : req.body;
+export const POST: APIRoute = async ({ request }) => {
+  const req = request;
+
+  let data: any = null;
+  try { data = await req.json(); } catch { data = null; }
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    return respond(res, 400, { ok: false, message: 'Некорректные данные формы.' });
+    return respond(400, { ok: false, message: 'Некорректные данные формы.' });
   }
 
   // Honeypot: do not send anything when this hidden field was filled by a bot.
   if (String(data['bot-field'] ?? '').trim()) {
-    return respond(res, 200, { ok: true, message: 'Сообщение принято.' });
+    return respond(200, { ok: true, message: 'Сообщение принято.' });
   }
 
   const clientIp = getClientIp(req);
   const limit = await checkRateLimit(clientIp);
   if (!limit.allowed) {
     if (limit.permanent) {
-      return respond(res, 429, { ok: false, code: 'BLOCKED', message: 'Отправка с вашего подключения временно недоступна. Пожалуйста, свяжитесь с нами по телефону.' });
+      return respond(429, { ok: false, code: 'BLOCKED', message: 'Отправка с вашего подключения временно недоступна. Пожалуйста, свяжитесь с нами по телефону.' });
     }
-    res.setHeader('Retry-After', String(limit.retryAfter ?? 3600));
-    return respond(res, 429, { ok: false, code: 'RATE_LIMIT', message: 'Слишком много попыток отправки. Пожалуйста, попробуйте позже или свяжитесь с нами по телефону.' });
+    return respond(429, { ok: false, code: 'RATE_LIMIT', message: 'Слишком много попыток отправки. Пожалуйста, попробуйте позже или свяжитесь с нами по телефону.' }, { 'Retry-After': String(limit.retryAfter ?? 3600) });
   }
 
   const turnstileToken = String(data['cf-turnstile-response'] ?? '').trim();
   if (!(await verifyTurnstile(turnstileToken, clientIp, req))) {
-    return respond(res, 403, { ok: false, code: 'CAPTCHA', message: 'Не удалось пройти проверку защиты от ботов. Обновите проверку и попробуйте ещё раз.' });
+    return respond(403, { ok: false, code: 'CAPTCHA', message: 'Не удалось пройти проверку защиты от ботов. Обновите проверку и попробуйте ещё раз.' });
   }
 
   const name = String(data.name ?? '').trim();
@@ -177,18 +182,18 @@ export default async function handler(req: any, res: any) {
   const message = String(data.message ?? '').trim();
 
   if (!name || !email || !message) {
-    return respond(res, 400, { ok: false, message: 'Заполните имя, электронную почту и сообщение.' });
+    return respond(400, { ok: false, message: 'Заполните имя, электронную почту и сообщение.' });
   }
   if (name.length > 120 || email.length > 254 || phone.length > 60 || message.length > 5000) {
-    return respond(res, 400, { ok: false, message: 'Слишком длинное значение в одном из полей.' });
+    return respond(400, { ok: false, message: 'Слишком длинное значение в одном из полей.' });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return respond(res, 400, { ok: false, message: 'Проверьте правильность адреса электронной почты.' });
+    return respond(400, { ok: false, message: 'Проверьте правильность адреса электронной почты.' });
   }
 
   // Authoritative server-side check runs before any email provider request.
   if (containsProfanity(name) || containsProfanity(message)) {
-    return respond(res, 422, {
+    return respond(422, {
       ok: false,
       code: 'PROFANITY',
       message: 'Сообщение содержит недопустимую или ненормативную лексику. Пожалуйста, отредактируйте текст.',
@@ -199,7 +204,7 @@ export default async function handler(req: any, res: any) {
   const from = process.env.RESEND_FROM_EMAIL;
   if (!apiKey || !from) {
     console.error('Missing RESEND_API_KEY or RESEND_FROM_EMAIL environment variable.');
-    return respond(res, 503, {
+    return respond(503, {
       ok: false,
       message: 'Отправка временно недоступна. Пожалуйста, позвоните нам или напишите на адрес, указанный на сайте.',
     });
@@ -235,21 +240,21 @@ export default async function handler(req: any, res: any) {
     if (!response.ok) {
       const details = await response.text();
       console.error('Resend API error:', response.status, details.slice(0, 1000));
-      return respond(res, 502, {
+      return respond(502, {
         ok: false,
         message: 'Не удалось отправить сообщение. Попробуйте позже или свяжитесь с нами по телефону.',
       });
     }
 
-    return respond(res, 200, {
+    return respond(200, {
       ok: true,
       message: 'Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.',
     });
   } catch (error) {
     console.error('Resend request failed:', error);
-    return respond(res, 502, {
+    return respond(502, {
       ok: false,
       message: 'Не удалось отправить сообщение. Проверьте подключение и попробуйте ещё раз.',
     });
   }
-}
+};
