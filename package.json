@@ -34,11 +34,20 @@
     "test:profanity": "node --test tests/profanity-filter.test.mjs"
   },
   "dependencies": {
+    "@astrojs/markdoc": "^2.1.1",
+    "@astrojs/react": "^7.1.1",
     "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/vercel": "^11.0.16",
+    "@keystatic/astro": "^6.0.0",
+    "@keystatic/core": "^0.6.9",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.3.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.4.2",
     "astro-robots-txt": "^1.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

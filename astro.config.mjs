@@ -4,11 +4,25 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import robotsTxt from 'astro-robots-txt';
 
+import react from '@astrojs/react';
+import markdoc from '@astrojs/markdoc';
+import vercel from '@astrojs/vercel';
+import keystatic from '@keystatic/astro';
+
 export default defineConfig({
   site: 'https://www.example.com',
   output: 'static',
+  adapter: vercel(),
 
-  integrations: [sitemap(), robotsTxt()],
+  integrations: [
+    sitemap(),
+    robotsTxt({
+      policy: [{ userAgent: '*', allow: '/', disallow: ['/keystatic', '/api'] }],
+    }),
+    react(),
+    markdoc(),
+    keystatic(),
+  ],
 
   fonts: [
     {
@@ -38,4 +52,5 @@ export default defineConfig({
       cssMinify: 'lightningcss',
     },
   },
+
 });
