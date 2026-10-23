@@ -1,0 +1,122 @@
+---
+// Подключаем файл с данными вашего сайта
+import { siteData } from '../data/siteData'; // Если файл лежит в другой папке, например src/config/siteData.ts, замените путь на '../../config/siteData'
+---
+
+<!-- 🌟 Заменили <section class="bg-surface py-section"> на простой блок без фона и отступов -->
+<div class="w-full">
+  <div class="mx-auto max-w-site">
+    
+    <!-- Сетка отзывов, подтягивающая данные напрямую из siteData.reviews -->
+    <ul class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" role="list">
+      {siteData.reviews.map(({ quote, name, location, rating = 5, date }) => {
+        // Автоматически берем первую букву имени для круглой аватарки Trustindex
+        const firstLetter = name ? name.charAt(0) : 'U';
+
+        return (
+          <li class="ti-review-card flex flex-col justify-between rounded-lg border border-border bg-background p-6 shadow-sm relative">
+            <div>
+              {/* Шапка карточки в стиле Trustindex: Аватар, имя, дата и логотип Google */}
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  {/* Иконка-аватар с использованием цвета бренда из вашего Tailwind */}
+                  <div class="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center font-bold text-lg select-none">
+                    {firstLetter}
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-sm text-text leading-tight">{name}</span>
+                    <span class="text-xs text-text-muted">{date || 'Недавно'}</span>
+                  </div>
+                </div>
+
+                {/* Значок Google с CSS-всплывающей подсказкой */}
+                <div class="relative group cursor-help flex items-center justify-center w-6 h-6">
+                  <img 
+                    src="/assets/images/google-icon.svg.webp" 
+                    alt="Google" 
+                    class="w-5 h-5 select-none"
+                  />
+                  {/* Всплывающий Tooltip */}
+                  <div class="absolute bottom-full right-0 mb-2 hidden group-hover:block bg-zinc-800 text-white text-[11px] px-2 py-1 rounded shadow-lg whitespace-nowrap z-20 pointer-events-none font-sans normal-case tracking-normal">
+                    Отзыв верифицирован через Google
+                  </div>
+                </div>
+              </div>
+
+              {/* Звезды рейтинга */}
+              <div class="mb-3 flex gap-0.5" role="img" aria-label={`Оценка ${rating} из 5 звезд`}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <svg
+                    class:list={['size-5', i < rating ? 'text-accent' : 'text-border']}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+
+              {/* Текст отзыва с ограничением по высоте (эффект сворачивания) */}
+              <div class="ti-review-text collapsed overflow-hidden transition-all duration-300 text-sm text-text-muted leading-relaxed max-h-[72px]">
+                &ldquo;{quote}&ldquo;
+              </div>
+            </div>
+
+            {/* Подвал карточки с кнопкой разворачивания и локацией */}
+            <div class="mt-4 border-t border-border pt-3 flex items-center justify-between">
+              <button 
+                class="ti-toggle-btn text-xs font-bold text-accent hover:underline cursor-pointer"
+                data-text-more="Читать далее"
+                data-text-less="Скрыть"
+              >
+                Читать далее
+              </button>
+              <span class="text-xs text-text-muted font-medium">{location}</span>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+
+  </div>
+<!-- 🌟 Закрыли новые теги <div> -->
+</div>
+
+<script>
+  function initTrustindexReviews() {
+    const cards = document.querySelectorAll('.ti-review-card');
+    
+    cards.forEach(card => {
+      const textBlock = card.querySelector('.ti-review-text') as HTMLElement;
+      const button = card.querySelector('.ti-toggle-btn') as HTMLButtonElement;
+      
+      if (!textBlock || !button) return;
+
+      // Скрываем кнопку "Читать далее", если отзыв изначально короткий и влезает в 3 строки
+      if (textBlock.scrollHeight <= 72) {
+        button.style.display = 'none';
+      }
+
+      button.addEventListener('click', () => {
+        const isCollapsed = textBlock.classList.contains('collapsed');
+        const textMore = button.getAttribute('data-text-more') || 'Читать далее';
+        const textLess = button.getAttribute('data-text-less') || 'Скрыть';
+
+        if (isCollapsed) {
+          textBlock.classList.remove('collapsed');
+          textBlock.style.maxHeight = textBlock.scrollHeight + "px";
+          button.textContent = textLess;
+        } else {
+          textBlock.classList.add('collapsed');
+          textBlock.style.maxHeight = "72px";
+          button.textContent = textMore;
+        }
+      });
+    });
+  }
+
+  // Скрипт корректно отработает как при первой загрузке, так и при переходах страниц Astro
+  initTrustindexReviews();
+  document.addEventListener('astro:after-swap', initTrustindexReviews);
+</script>

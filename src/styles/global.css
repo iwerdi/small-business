@@ -1,3 +1,5 @@
+/* Шрифты с поддержкой кириллицы (Inter и Oswald). @import url() обязан стоять первым в файле. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Oswald:wght@400;600;700&display=swap');
 @import "tailwindcss";
 @import "./theme.css";
 @plugin "@tailwindcss/typography";
@@ -5,6 +7,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+  }
+
+  /* цель для «Наверх»/skip-ссылки: без рамки при программном фокусе */
+  main:focus {
+    outline: none;
   }
 
   body {
@@ -17,18 +24,6 @@
     font-family: var(--font-heading);
     line-height: 1.2;
     color: var(--color-text);
-  }
-
-  .dark body,
-  body.dark-mode {
-    background-color: var(--color-dark);
-    color: var(--color-surface);
-  }
-
-  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
-  body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
-  body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
-    color: var(--color-surface);
   }
 
   @media (prefers-reduced-motion: reduce) {

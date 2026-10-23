@@ -31,6 +31,7 @@ export default defineConfig({
       cssVariable: '--font-display',
       weights: ['400', '600', '700'],
       styles: ['normal'],
+      subsets: ['latin', 'cyrillic'],
     },
     {
       provider: fontProviders.google(),
@@ -38,6 +39,7 @@ export default defineConfig({
       cssVariable: '--font-body',
       weights: ['400', '500', '700'],
       styles: ['normal'],
+      subsets: ['latin', 'cyrillic'],
     },
   ],
 

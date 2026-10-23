@@ -9,6 +9,7 @@
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
+import ScrollToTop from '../components/ScrollToTop.astro';
 import { brand } from '../config/brand';
 import { siteData } from '../data/siteData';
 
@@ -67,16 +68,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? brand.url);
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     )}
 
-    <!-- FOUC prevention for dark mode -->
-    <script is:inline>
-      (function(){
-        var t = localStorage.getItem('theme');
-        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark-mode');
-        }
-      })();
-    </script>
-
     <slot name="head" />
     <ClientRouter />
   </head>
@@ -86,7 +77,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? brand.url);
       class="sr-only focus:not-sr-only focus:absolute focus:z-[99999] focus:bg-primary focus:text-primary-fg focus:px-4 focus:py-2 focus:rounded-md"
       href="#main"
     >
-      Skip to main content
+      Перейти к основному содержимому
     </a>
 
     <slot name="header" />
@@ -96,5 +87,41 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? brand.url);
     </main>
 
     <slot name="footer" />
+
+    <ScrollToTop />
+
+    <script>
+      /**
+       * Сброс прокрутки при переходе по ссылкам.
+       *
+       * Из-за плавной прокрутки (scroll-behavior: smooth) и постоянного подвала
+       * (transition:persist) страница могла оставаться в самом низу после перехода.
+       * Здесь мы принудительно и МГНОВЕННО возвращаемся наверх, кроме случаев:
+       *  • кнопки «Назад/Вперёд» — браузер сам восстанавливает прежнюю позицию;
+       *  • ссылки с якорем (#...) — нужно прокрутить к нужному месту;
+       *  • первой загрузки и обновления страницы (F5) — это не переход.
+       */
+      let pendingReset = false;
+
+      document.addEventListener("astro:before-swap", (e) => {
+        const type = (e as unknown as { navigationType?: string }).navigationType;
+        pendingReset = type !== "traverse";
+      });
+
+      function resetScroll() {
+        if (!pendingReset || window.location.hash) return;
+        const root = document.documentElement;
+        root.style.scrollBehavior = "auto";
+        window.scrollTo(0, 0);
+        requestAnimationFrame(() => root.style.removeProperty("scroll-behavior"));
+      }
+
+      document.addEventListener("astro:after-swap", resetScroll);
+      // Страховка: повторяем после завершения перехода и сбрасываем флаг.
+      document.addEventListener("astro:page-load", () => {
+        resetScroll();
+        pendingReset = false;
+      });
+    </script>
   </body>
 </html>

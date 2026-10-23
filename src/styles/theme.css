@@ -15,7 +15,7 @@
 --color-primary: #1b3a6b; 
 --color-primary-light: #2563eb; 
 --color-primary-fg: #ffffff; 
---color-accent: #b45309; 
+--color-accent: #f59e0b; 
 --color-accent-fg: #ffffff; 
 
 /* ── Нейтральная палитра ────────────────────────────────────────── */
@@ -54,8 +54,7 @@
 * Директива @theme inline выводит ссылки var(), не пытаясь разрешить их на этапе сборки. 
 */
 
-/* 1. Подключаем шрифты с полной поддержкой кириллицы */
-@import url('https://googleapis.com');
+/* Шрифты с кириллицей подключаются в global.css (@import) и в astro.config.mjs (subsets). */
 
 /* 2. Ваша конфигурация Tailwind v4 */
 @theme inline {

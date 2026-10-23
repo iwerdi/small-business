@@ -1,0 +1,196 @@
+---
+/**
+ * Кнопка «Наверх».
+ *
+ * • Появляется только после прокрутки вниз и плавно исчезает наверху страницы.
+ * • Один экземпляр на весь сайт: подключена в BaseLayout и сохраняется между
+ *   переходами (transition:persist), как Header и Footer.
+ * • Адаптивна: 44 px на телефоне (минимальная зона касания), 48 px на планшете,
+ *   56 px на ПК. Отступы от краёв растут вместе с экраном и учитывают «чёлки»
+ *   и жестовые панели телефонов (safe-area).
+ * • Цвет accent хорошо виден и на светном фоне страницы, и на тёмном подвале.
+ * • Доступна с клавиатуры и для скринридеров; в скрытом состоянии не получает фокус.
+ */
+---
+
+<button
+  id="scroll-top"
+  type="button"
+  class="scroll-top inline-flex items-center justify-center rounded-full border border-white/30 bg-accent text-accent-fg shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+  aria-label="Наверх"
+  title="Наверх"
+  data-visible="false"
+  tabindex="-1"
+  aria-hidden="true"
+  transition:persist
+>
+  <svg
+    class="scroll-top__icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 19V5" />
+    <path d="M5 12l7-7 7 7" />
+  </svg>
+</button>
+
+<style>
+  .scroll-top {
+    position: fixed;
+    z-index: 40; /* ниже шапки и окна галереи (z-50), выше обычного контента */
+    width: 2.75rem;  /* 44 px — телефон */
+    height: 2.75rem;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    cursor: pointer;
+
+    /* скрытое состояние */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.75rem);
+    pointer-events: none;
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease,
+      visibility 0s linear 0.25s,
+      background-color 0.2s ease;
+  }
+
+  .scroll-top[data-visible="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease,
+      visibility 0s,
+      background-color 0.2s ease;
+  }
+
+  .scroll-top__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .scroll-top:active {
+    transform: scale(0.92);
+  }
+
+  /* hover только там, где есть мышь: на тачскринах он «залипает» */
+  @media (hover: hover) {
+    .scroll-top:hover {
+      background-color: #d97706; /* чуть темнее accent */
+    }
+  }
+
+  /* Планшет */
+  @media (min-width: 640px) {
+    .scroll-top {
+      width: 3rem; /* 48 px */
+      height: 3rem;
+      right: max(1.5rem, env(safe-area-inset-right));
+      bottom: max(1.5rem, env(safe-area-inset-bottom));
+    }
+    .scroll-top__icon {
+      width: 1.375rem;
+      height: 1.375rem;
+    }
+  }
+
+  /* ПК */
+  @media (min-width: 1024px) {
+    .scroll-top {
+      width: 3.5rem; /* 56 px */
+      height: 3.5rem;
+      right: max(2rem, env(safe-area-inset-right));
+      bottom: max(2rem, env(safe-area-inset-bottom));
+    }
+    .scroll-top__icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  /* Телефон в горизонтальном положении: экран низкий, кнопку делаем компактнее */
+  @media (max-height: 480px) and (orientation: landscape) {
+    .scroll-top {
+      width: 2.5rem;
+      height: 2.5rem;
+      bottom: max(0.75rem, env(safe-area-inset-bottom));
+    }
+  }
+
+  @media print {
+    .scroll-top {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-top {
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+
+<script>
+  const SHOW_AFTER = 400; // px прокрутки, после которых появляется кнопка
+
+  function initScrollTop() {
+    const btn = document.getElementById("scroll-top") as HTMLButtonElement | null;
+    if (!btn) return;
+
+    // Кнопка сохраняется между переходами — слушатели вешаем один раз.
+    if (btn.dataset.init === "true") {
+      update();
+      return;
+    }
+    btn.dataset.init = "true";
+
+    let ticking = false;
+
+    function update() {
+      const show = window.scrollY > SHOW_AFTER;
+      if ((btn as HTMLButtonElement).dataset.visible === String(show)) return;
+      const b = btn as HTMLButtonElement;
+      b.dataset.visible = String(show);
+      b.setAttribute("aria-hidden", String(!show));
+      b.tabIndex = show ? 0 : -1;
+    }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      },
+      { passive: true }
+    );
+
+    btn.addEventListener("click", () => {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, left: 0, behavior: reduce ? "auto" : "smooth" });
+      // Возвращаем фокус в начало страницы, чтобы клавиатурный пользователь
+      // не «застрял» на скрывшейся кнопке.
+      const main = document.getElementById("main");
+      if (main) {
+        main.setAttribute("tabindex", "-1");
+        main.focus({ preventScroll: true });
+      }
+    });
+
+    update();
+  }
+
+  document.addEventListener("astro:page-load", initScrollTop);
+</script>

@@ -34,7 +34,7 @@ const { about } = siteData;
         <span class="text-topper font-bold uppercase tracking-widest text-accent">Наша история</span>
         <h2 class="font-heading text-h2 font-bold uppercase text-text">Основано на доверии, сфокусировано на качестве</h2>
         {about.story.map((paragraph) => (
-          <p class="text-text-muted leading-relaxed">{paragraph}</p>
+          <p class="text-text-muted leading-relaxed text-justify indent-8">{paragraph}</p>
         ))}
       </div>
     </div>
@@ -48,16 +48,17 @@ const { about } = siteData;
         <h2 class="mt-2 font-heading text-h2 font-bold uppercase text-text">Знакомьтесь с мастерами</h2>
       </div>
 
-      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {about.team.map(({ name, role, image }) => (
           <div class="overflow-hidden rounded-lg bg-background shadow-sm">
-            <Image
+            <img
               src={image}
-              alt={name}
-              width={400}
-              height={400}
+              alt={`Фотография мастера: ${name}`}
+              width="600"
+              height="800"
               loading="lazy"
-              class="aspect-square w-full object-cover"
+              decoding="async"
+              class="aspect-[3/4] w-full bg-surface object-contain"
             />
             <div class="p-5">
               <h3 class="font-heading text-lg font-semibold text-text">{name}</h3>
